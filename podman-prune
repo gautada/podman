@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# podman-prune: Remove all older images (greater than 24h) so that the podman
+# service will not keep running and fill up the disk
+
+echo "Pruning the podman images..."
+/usr/bin/podman image prune --all --filter "until=6h" --force
