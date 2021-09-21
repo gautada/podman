@@ -36,8 +36,4 @@ unset DOCKER_HOST
 - Environment Variables
  - LOG_LEVEL = Default is info but can be overridden to debug, info, warn, error, etc. 
  
-### Kubernetes
-
-The purpose of using Podman in the k8s cluster is to support container builds for the various architecture/hardware that make up the cluster.
-
 

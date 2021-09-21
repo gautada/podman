@@ -50,7 +50,7 @@ fi
 
 # Launch crond to prune the tree
 # ---------- [ CROND ] ----------
-/usr/bin/sudo /usr/sbin/crond -f
+/usr/bin/sudo /usr/sbin/crond -b
 
 # ---------- [ PODMAN ] ----------
 if [ -z $LOG_LEVEL ] ; then
