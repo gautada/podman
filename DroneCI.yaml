@@ -17,15 +17,7 @@ steps:
     OCI_REPOSITORY: docker://docker.io/gautada
     OCI_CPU: aarch64
   commands:
-  - ./builder-base 5
-  - ssh -o "StrictHostKeyChecking=no" -i /home/bob/.ssh/id_rsa bob@drone-podman-aarch64.cicd.svc.cluster.local /bin/sleep 5
-  - podman --remote --connection aarch64 login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD docker.io
-  - podman --remote --connection aarch64 build --build-arg ALPINE_TAG=$ALPINE_TAG --build-arg VERSION=$OCI_VERSION --file Containerfile --no-cache --tag localhost/$OCI_CONTAINER:dev .
-  - podman --remote --connection aarch64 push localhost/$OCI_CONTAINER:dev $OCI_REPOSITORY/$OCI_CONTAINER:$OCI_VERSION-x86_64
-
-  # buildah login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD docker.io
-  # buildah bud --build-arg ALPINE_TAG=$ALPINE_TAG --build-arg VERSION=$OCI_VERSION --file Containerfile --no-cache --tag localhost/$OCI_CONTAINER:dev
-  # buildah push localhost/$OCI_CONTAINER:dev $OCI_REPOSITORY/$OCI_CONTAINER:$OCI_VERSION-$OCI_CPU
+  - sleep 5400
 
 trigger:
   branch:
