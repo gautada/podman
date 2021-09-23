@@ -42,9 +42,9 @@ if [ ! -f /etc/ssh/ssh_host_rsa_key ] ; then
  /usr/bin/sudo /usr/bin/ssh-keygen -A
 fi
 # Check that server side keys are generated
-if [ ! -f /home/bob/.ssh/podman_key ] ; then
-  /usr/bin/ssh-keygen -f /home/bob/.ssh/podman_key -N ''
-  cp /home/bob/.ssh/podman_key.pub /home/bob/.ssh/authorized_keys
+if [ ! -f /home/podman/.ssh/podman_key ] ; then
+  # /usr/bin/ssh-keygen -f /home/bob/.ssh/podman_key -N ''
+  cp /opt/podman-data/authorized_keys /home/podman/.ssh/authorized_keys
 fi
 /usr/bin/sudo /usr/sbin/sshd -e -f /etc/ssh/sshd_config
 

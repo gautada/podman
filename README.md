@@ -17,6 +17,14 @@ podman --remote --connection arm login --username=gautada docker.io
 podman --remote --connection arm push docker.io/gautada/podman:3.2.3-r1-arm
 ```
 
+```
+podman --remote --connection arm build --build-arg ALPINE_TAG=3.14.2 --build-arg VERSION=3.2.3-r1 --file Containerfile --no-cache  --tag podman:dev .
+podman --remote --connection arm tag podman:dev docker.io/gautada/podman:3.2.3-r1-arm
+podman --remote --connection arm login --username=gautada docker.io
+podman --remote --connection arm push docker.io/gautada/podman:3.2.3-r1-arm
+
+```
+
 x86 instance can be made on any x86_64 machine
 
 ```
