@@ -3,7 +3,7 @@ type: kubernetes
 name: Continuous Integration
 
 steps:
-- name: build-arm
+- name: build
   image: docker.io/gautada/builder:3.2.3-r1-arm
   privileged: true
   environment:
@@ -30,7 +30,10 @@ steps:
   - podman --remote --connection arm tag podman:dev docker.io/gautada/podman:3.2.3-r1-arm
   - podman --remote --connection arm login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD docker.io
   - podman --remote --connection arm push docker.io/gautada/podman:3.2.3-r1-arm
-
+  - podman --remote --connection x86 build --build-arg ALPINE_TAG=3.14.2 --build-arg VERSION=3.2.3-r1 --file Containerfile --no-cache  --tag podman:dev .
+  - podman --remote --connection x86 tag podman:dev docker.io/gautada/podman:3.2.3-r1-arm
+  - podman --remote --connection x86 login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD docker.io
+  - podman --remote --connection x86 push docker.io/gautada/podman:3.2.3-r1-arm
 trigger:
   branch:
   - dev
