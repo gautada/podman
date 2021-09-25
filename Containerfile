@@ -41,8 +41,8 @@ USER $USER
 WORKDIR /home/$USER
 
 RUN mkdir -p ~/.ssh
-RUN ln -s /opt/podman-data/authorized_keys ~/.ssh/authorized_keys
-# RUN chmod 600 -R ~/.ssh
+# RUN ln -s /opt/podman-data/authorized_keys ~/.ssh/authorized_keys
+# RUN chmod 0400 -R ~/.ssh
 
 RUN podman system connection add local --identity /home/$USER/.ssh/podman_key ssh://localhost:22/tmp/podman-run-1000/podman/podman.sock \
  && podman system connection add x86 --identity /home/$USER/.ssh/podman_key_x86 ssh://$USER@podman-x86.cicd.svc.cluster.local:22/tmp/podman-run-1000/podman/podman.sock \
