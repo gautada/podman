@@ -14,7 +14,7 @@ COPY --from=config-alpine /etc/timezone  /etc/timezone
 EXPOSE 22
 
 ARG VERSION=1.1.1
-
+RUN echo $VERSION
 RUN apk add --no-cache buildah podman=$VERSION git iputils openssh fuse-overlayfs shadow slirp4netns sudo
 
 RUN mv /etc/containers/storage.conf /etc/containers/storage.conf~ \
