@@ -7,9 +7,9 @@ steps:
   image: docker.io/gautada/builder:3.2.3-r1
   privileged: true
   environment:
-    DOCKER_USERNAME:
+    DOCKERIO_USERNAME:
       from_secret: username.docker.io
-    DOCKER_PASSWORD:
+    DOCKERIO_PASSWORD:
       from_secret: password.docker.io
     PODMAN_KEY_ARM:
       from_secret: podman.key.arm
@@ -19,24 +19,26 @@ steps:
       from_secret: podman.key.x86
     PODMAN_CERT_x86:
       from_secret: podman.cert.x86
+    ALPINE_TAG: 3.14.2
+    PODMAN_VERSION: 3.4.0-r0
   commands:
   - /builder-base 5
-  - podman --remote --connection arm build --build-arg ALPINE_TAG=3.14.2 --build-arg VERSION=3.2.3-r1 --file Containerfile --format docker --no-cache --platform linux/arm64/v8   --tag podman:dev .
-  - podman --remote --connection arm tag podman:dev docker.io/gautada/podman:3.2.3-r1-arm
-  - podman --remote --connection arm login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD docker.io
-  - podman --remote --connection arm push docker.io/gautada/podman:3.2.3-r1-arm
+  - podman --remote --connection arm build --build-arg ALPINE_TAG=$ALPINE_TAG --build-arg VERSION=$PODMAN_VERSION --file Containerfile --format docker --no-cache --platform linux/arm64/v8 --tag podman:dev .
+  - podman --remote --connection arm tag podman:dev docker.io/gautada/podman:arm-$PODMAN_VERSION
+  - podman --remote --connection arm login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
+  - podman --remote --connection arm push docker.io/gautada/podman:arm-$PODMAN_VERSION
 
-  - podman --remote --connection x86 build --build-arg ALPINE_TAG=3.14.2 --build-arg VERSION=3.2.3-r1 --file Containerfile --format docker --no-cache --platform linux/amd64 --tag podman:dev .
-  - podman --remote --connection x86 tag podman:dev docker.io/gautada/podman:3.2.3-r1-x86
-  - podman --remote --connection x86 login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD docker.io
-  - podman --remote --connection x86 push docker.io/gautada/podman:3.2.3-r1-x86
+  - podman --remote --connection x86 build --build-arg ALPINE_TAG=$ALPINE_TAG --build-arg VERSION=$PODMAN_VERSION --file Containerfile --format docker --no-cache --platform linux/amd64 --tag podman:dev .
+  - podman --remote --connection x86 tag podman:dev docker.io/gautada/podman:x86-$PODMAN_VERSION
+  - podman --remote --connection x86 login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
+  - podman --remote --connection x86 push docker.io/gautada/podman:x86-$PODMAN_VERSION
 
   - podman --remote --connection arm manifest create podman:man
-  - podman --remote --connection arm manifest add podman:man docker.io/gautada/podman:3.2.3-r1-arm
-  - podman --remote --connection arm manifest add podman:man docker.io/gautada/podman:3.2.3-r1-x86
-  - podman --remote --connection arm tag podman:man docker.io/gautada/podman:3.2.3-r1
-  - podman --remote --connection arm login --username=gautada --password=$DOCKER_PASSWORD docker.io
-  - podman --remote --connection arm push docker.io/gautada/podman:3.2.3-r1
+  - podman --remote --connection arm manifest add podman:man docker.io/gautada/podman:arm-$PODMAN_VERSION
+  - podman --remote --connection arm manifest add podman:man docker.io/gautada/podman:x86-$PODMAN_VERSION
+  - podman --remote --connection arm tag podman:man docker.io/gautada/podman:$PODMAN_VERSION
+  - podman --remote --connection arm login --username=$DOCKETIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
+  - podman --remote --connection arm push docker.io/gautada/podman:$PODMAN_VERSION
   - podman --remote --connection arm rmi podman:man
 
 trigger:
