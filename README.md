@@ -1,6 +1,5 @@
 # podman-container
 
-flipflop
 [Podman](https://podman.io) is a daemonless container engine for developing, managing, and running Open Container Initiative (OCI) containers and container images on your Linux System.
 
 ## Container
