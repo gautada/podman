@@ -19,8 +19,8 @@ steps:
       from_secret: podman.key.x86
     PODMAN_CERT_x86:
       from_secret: podman.cert.x86
-    ALPINE_TAG: 3.14.2
-    PODMAN_VERSION: 3.4.0-r0
+    ALPINE_TAG: "3.14.2"
+    PODMAN_VERSION: "3.4.0-r0"
   commands:
   - /builder-base 5
   - podman --remote --connection arm build --build-arg ALPINE_TAG=$ALPINE_TAG --build-arg VERSION=$PODMAN_VERSION --file Containerfile --format docker --no-cache --platform linux/arm64/v8 --tag podman:dev .

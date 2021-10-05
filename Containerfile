@@ -13,7 +13,7 @@ COPY --from=config-alpine /etc/timezone  /etc/timezone
 
 EXPOSE 22
 
-ARG VERSION=3.2.3-r1
+ARG VERSION=1.1.1
 
 RUN apk add --no-cache buildah podman=$VERSION git iputils openssh fuse-overlayfs shadow slirp4netns sudo
 
