@@ -20,7 +20,7 @@ steps:
     PODMAN_CERT_x86:
       from_secret: podman.cert.x86
     ALPINE_TAG: "3.14.2"
-    PODMAN_VERSION: "3.4.0-r0"
+    PODMAN_VERSION: "3.2.3-r1"
   commands:
   - /builder-base 5
   - podman --remote --connection arm build --build-arg ALPINE_TAG=$ALPINE_TAG --build-arg VERSION=$PODMAN_VERSION --file Containerfile --format docker --no-cache --platform linux/arm64/v8 --tag podman:dev .
@@ -37,7 +37,7 @@ steps:
   - podman --remote --connection arm manifest add podman:man docker.io/gautada/podman:arm-$PODMAN_VERSION
   - podman --remote --connection arm manifest add podman:man docker.io/gautada/podman:x86-$PODMAN_VERSION
   - podman --remote --connection arm tag podman:man docker.io/gautada/podman:$PODMAN_VERSION
-  - podman --remote --connection arm login --username=$DOCKETIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
+  - podman --remote --connection arm login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
   - podman --remote --connection arm push docker.io/gautada/podman:$PODMAN_VERSION
   - podman --remote --connection arm rmi podman:man
 
