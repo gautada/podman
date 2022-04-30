@@ -1,21 +1,14 @@
-ARG ALPINE_TAG=3.14.1
-FROM alpine:$ALPINE_TAG as config-alpine
+ARG ALPINE_TAG=3.15.4
+FROM gautada/alpine:3.15.4
 
-RUN apk add --no-cache tzdata
-
-RUN cp -v /usr/share/zoneinfo/America/New_York /etc/localtime
-RUN echo "America/New_York" > /etc/timezone
-
-FROM alpine:$ALPINE_TAG
-
-COPY --from=config-alpine /etc/localtime /etc/localtime
-COPY --from=config-alpine /etc/timezone  /etc/timezone
+LABEL source="https://github.com/gautada/podman-container.git"
+LABEL maintainer="Adam Gautier <adam@gautier.org>"
+LABEL description="This container is a a podman installation for building OCI containers."
 
 EXPOSE 22
 
-ARG VERSION=1.1.1
-
-RUN apk add --no-cache buildah podman=$VERSION git iputils openssh fuse-overlayfs shadow slirp4netns sudo
+ARG PODMAN_VERSION=3.4.7-r0
+RUN apk add --no-cache buildah podman=$PODMAN_VERSION git iputils openssh fuse-overlayfs shadow slirp4netns sudo
 
 RUN mv /etc/containers/storage.conf /etc/containers/storage.conf~ \
  && sed 's/#mount_program/mount_program/' /etc/containers/storage.conf~ > /etc/containers/storage.conf \
@@ -23,6 +16,8 @@ RUN mv /etc/containers/storage.conf /etc/containers/storage.conf~ \
  && sed 's/AllowTcpForwarding no/AllowTcpForwarding all/' /etc/ssh/sshd_config~ > /etc/ssh/sshd_config \
  && mkdir -p /opt/podman-data
 
+COPY version.sh /etc/profile.d/version.sh
+COPY bootstrap.sh /etc/profile.d/bootstrap.sh
 COPY podman-prune /etc/periodic/15min/podman-prune
 COPY entrypoint /entrypoint
 
@@ -49,5 +44,3 @@ RUN podman system connection add local --identity /home/$USER/.ssh/podman_key ss
  && podman system connection add arm --identity /home/$USER/.ssh/podman_key_arm ssh://$USER@podman-arm.cicd.svc.cluster.local:22/tmp/podman-run-1000/podman/podman.sock 
  
 ENTRYPOINT ["/entrypoint"]
-
-
