@@ -17,7 +17,7 @@ RUN mv /etc/containers/storage.conf /etc/containers/storage.conf~ \
  && mkdir -p /opt/podman-data
 
 COPY version.sh /etc/profile.d/version.sh
-COPY test.sh /etc/profile.d/test.sh
+COPY bootstrap.sh /etc/profile.d/bootstrap.sh
 COPY podman-prune /etc/periodic/15min/podman-prune
 COPY entrypoint /entrypoint
 
