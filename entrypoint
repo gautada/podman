@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/ash
 
 # Luanch the ssh bastion and podman API Service.
 

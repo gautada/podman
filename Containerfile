@@ -1,9 +1,9 @@
 ARG ALPINE_TAG=3.15.4
-FROM gautada/alpine:3.15.4
+FROM gautada/alpine:$ALPINE_TAG
 
 LABEL source="https://github.com/gautada/podman-container.git"
 LABEL maintainer="Adam Gautier <adam@gautier.org>"
-LABEL description="This container is a a podman installation for building OCI containers."
+LABEL description="This container is a podman installation for building OCI containers."
 
 EXPOSE 22
 
