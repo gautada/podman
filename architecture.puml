@@ -1,0 +1,16 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Container_Ext(docker_desktop, "Docker Desktop", "Container Manager", "Container Manager")
+Container_Ext(docker, "Docker", "Container Repository", "Container Repository")
+
+Container(podman, "Podman", "Container Manager", "OCI Container API")
+Container(drone, "Drone", "Continuous Build", "Continuous Build System")
+
+Lay_D(docker_desktop, drone)
+
+Rel_R(docker_desktop, podman, "Uses")
+Rel_R(drone, podman, "Uses")
+Rel_R(podman, docker, "Releases")
+
+@enduml
