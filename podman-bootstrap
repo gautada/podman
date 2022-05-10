@@ -17,7 +17,7 @@ cd podman-container
 PODMAN_VERSION="3.4.7"
 PODMAN_PACKAGE="$PODMAN_VERSION"-r0 ;
  
-podman build --build-arg ALPINE_VERSION=$ALPINE_VERSION --build-arg PODMAN_VERSION=$PODMAN_PACKAGE --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --no-cache --tag podman:dev .
+export ALPINE_VERSION="3.15.4" ; export PODMAN_VERSION="3.4.7" ; export PODMAN_PACKAGE="$PODMAN_VERSION"-r0 ; podman build --build-arg PODMAN_VERSION=$PODMAN_PACKAGE --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --no-cache --tag podman:dev .
  
 podman tag podman:dev docker.io/$DOCKERIO_ACCOUNT/podman:$PODMAN_VERSION
 echo "!!!  --- docker.io Login Password Required"
@@ -31,4 +31,5 @@ podman rmi localhost/podman:dev
 podman rmi docker.io/$DOCKERIO_ACCOUNT/podman:$PODMAN_VERSION
 podman rmi docker.io/$DOCKERIO_ACCOUNT/alpine:$ALPINE_VERSION
 podman rmi localhost/alpine:dev
+podman rmi $(podman images -q)
 podman images
