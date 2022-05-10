@@ -23,7 +23,7 @@ As this is a core part of the build system for containers a manual bootstrap bui
 
 2. Build the local/docker version of the container.
 ```
-export PODMAN_VERSION="3.4.7" ; export PODMAN_PACKAGE="$PODMAN_VERSION"-r0 ; docker build --build-arg PODMAN_VERSION=$PODMAN_PACKAGE --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --no-cache --tag podman:dev .
+export ALPINE_VERSION="3.15.4" ; export PODMAN_VERSION="3.4.7" ; export PODMAN_PACKAGE="$PODMAN_VERSION"-r0 ; docker build --build-arg PODMAN_VERSION=$PODMAN_PACKAGE --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --no-cache --tag podman:dev .
 ```
 
 3. Launch the container and it's services

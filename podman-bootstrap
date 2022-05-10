@@ -1,0 +1,34 @@
+#!/bin/ash
+#
+
+DOCKERIO_ACCOUNT=gautada
+ 
+git clone https://github.com/gautada/alpine-container.git
+ALPINE_VERSION="3.15.4"
+cd alpine-container
+ 
+podman build --build-arg ALPINE_VERSION=$ALPINE_VERSION --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --no-cache --tag alpine:dev .
+podman tag alpine:dev docker.io/$DOCKERIO_ACCOUNT/alpine:$ALPINE_VERSION
+ 
+cd ../
+git clone https://github.com/gautada/podman-container.git
+cd podman-container
+ 
+PODMAN_VERSION="3.4.7"
+PODMAN_PACKAGE="$PODMAN_VERSION"-r0 ;
+ 
+podman build --build-arg ALPINE_VERSION=$ALPINE_VERSION --build-arg PODMAN_VERSION=$PODMAN_PACKAGE --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --no-cache --tag podman:dev .
+ 
+podman tag podman:dev docker.io/$DOCKERIO_ACCOUNT/podman:$PODMAN_VERSION
+echo "!!!  --- docker.io Login Password Required"
+podman login --username=$DOCKERIO_ACCOUNT docker.io
+podman push docker.io/$DOCKERIO_ACCOUNT/podman:$PODMAN_VERSION
+ 
+echo "Cleaning up"
+cd /home/podman
+rm -rf podman-container
+podman rmi localhost/podman:dev
+podman rmi docker.io/$DOCKERIO_ACCOUNT/podman:$PODMAN_VERSION
+podman rmi docker.io/$DOCKERIO_ACCOUNT/alpine:$ALPINE_VERSION
+podman rmi localhost/alpine:dev
+podman images
