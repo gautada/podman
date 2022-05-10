@@ -23,12 +23,12 @@ As this is a core part of the build system for containers a manual bootstrap bui
 
 2. Build the local/docker version of the container.
 ```
-export PODMAN_VERSION="3.4.7" ; export PODMAN_PACKAGE="$PODMAN_VERSION"-r0 ; docker build --build-arg PODMAN_VERSION=$PODMAN_PACKAGE --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --no-cache --tag podman:dev .
+export ALPINE_VERSION="3.15.4" ; export PODMAN_VERSION="3.4.7" ; export PODMAN_PACKAGE="$PODMAN_VERSION"-r0 ; docker build --build-arg PODMAN_VERSION=$PODMAN_PACKAGE --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --no-cache --tag podman:dev .
 ```
 
 3. Launch the container and it's services
 ```
-docker run --name podman --privileged --rm podman:dev
+docker run --detach --name podman --privileged --rm podman:dev
 ```
 
 4. Execute the shell
@@ -40,16 +40,44 @@ docker exec --interactive --tty podman /bin/ash
 ```
 bootstrap
 ```
+**Note:** Output is interactive and you will need to provide a valid password.
 
-Output:
+6. Clean-up the bootstrap environment.
+
+Leave the podman container used for bootstrap.
 ```
-...
+exit
 ```
+
+Stop the podman container
+```
+docker stop podman
+```
+
+**Note:** It is a good idea to check that `podman` is not running via `docker ps -a` and to user `docker rmi` to remove any lingering images in the bootstrap environment.
+
+### Run
+
+After bootstrap the latest container should be in the docker.io [repository](https://hub.docker.com/repository/docker/gautada/podman/general). To launch just `run` the tagged container.
+
+```
+docker run --detach --name podman --privileged --rm docker.io/gautada/podman:3.4.7
+``` 
 
 ### Configuration
 
-- Podman container should be run with the the `--privileged` flag. 
-- Environment Variables
- - LOG_LEVEL = Default is info but can be overridden to debug, info, warn, error, etc. 
+#### Privileged
+
+Podman container should be run with the the `--privileged` flag. 
+
+#### Log Level
+
+LOG_LEVEL = Default is info but can be overridden to debug, info, warn, error, etc. 
+
+### SSH
+
+**Note:** document SSH
+
+**Note:** document remote configuration.    
  
 
