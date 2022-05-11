@@ -1,6 +1,7 @@
 #!/bin/ash
 #
-# If no params and not previously launched then launch as a service process.
+# Launch the podman service/process if not previously launched. If parameters are not provided
+# launch as a process. If parameters provided fork the podman as a service.
 
 echo "$0"
 TEST="$(/usr/bin/pgrep podman)"

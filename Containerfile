@@ -10,7 +10,7 @@ USER root
 VOLUME /opt/podman
 
 ARG PODMAN_PACKAGE=3.4.7-r0
-RUN /sbin/apk add --no-cache buildah podman=$PODMAN_PACKAGE git iputils fuse-overlayfs slirp4netns
+RUN /sbin/apk add --no-cache buildah podman=$PODMAN_PACKAGE fuse-overlayfs slirp4netns
 
 COPY podman-bootstrap /usr/bin/podman-bootstrap
 COPY podman-prune /etc/periodic/15min/podman-prune
