@@ -1,5 +1,5 @@
-ARG ALPINE_TAG=3.15.4
-FROM gautada/alpine:$ALPINE_TAG
+ARG ALPINE_VERSION=3.15.4
+FROM gautada/alpine:$ALPINE_VERSION
 
 LABEL source="https://github.com/gautada/podman-container.git"
 LABEL maintainer="Adam Gautier <adam@gautier.org>"
@@ -9,7 +9,8 @@ USER root
 
 VOLUME /opt/podman
 
-ARG PODMAN_PACKAGE=3.4.7-r0
+ARG PODMAN_VERSION
+ARG PODMAN_PACKAGE="$PODMAN_VERSION"-r0
 RUN /sbin/apk add --no-cache buildah podman=$PODMAN_PACKAGE fuse-overlayfs slirp4netns
 
 COPY podman-bootstrap /usr/bin/podman-bootstrap
