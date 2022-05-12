@@ -10,7 +10,7 @@ USER root
 VOLUME /opt/podman
 
 ARG PODMAN_VERSION
-ARG PODMAN_PACKAGE="$PODMAN_VERSION"-r0
+ARG PODMAN_PACKAGE="$PODMAN_VERSION"-r1
 RUN /sbin/apk add --no-cache buildah podman=$PODMAN_PACKAGE fuse-overlayfs slirp4netns
 
 COPY podman-bootstrap /usr/bin/podman-bootstrap

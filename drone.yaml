@@ -12,7 +12,7 @@ steps:
     ALPINE_VERSION: 3.15.4
     PODMAN_VERSION: 3.4.7
   commands:
-  - podman build --build-arg ALPINE_VERSION=$ALPINE_VERSION --build-arg PODMAN_VERSION=$PODMAN_VERSION --build-arg PODMAN_PACKAGE=$PODMAN_VERSION-r0 --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --no-cache --tag podman:build .
+  - podman build --build-arg ALPINE_VERSION=$ALPINE_VERSION --build-arg PODMAN_VERSION=$PODMAN_VERSION --build-arg PODMAN_PACKAGE="$PODMAN_VERSION"-r1 --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --no-cache --tag podman:build .
 
 - name: publish
   environment:
