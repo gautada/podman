@@ -1,0 +1,28 @@
+kind: pipeline
+type: exec
+name: Container Build - Podman
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: build
+  environment:
+    ALPINE_VERSION: 3.15.4
+    PODMAN_VERSION: 3.4.7
+  commands:
+  - build --build-arg ALPINE_VERSION=$ALPINE_VERSION --build-arg PODMAN_VERSION=$PODMAN_VERSION --build-arg PODMAN_PACKAGE=$PODMAN_VERSION-r0 --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --no-cache --tag podman:build .
+
+- name: publish
+  environment:
+    PODMAN_VERSION: 3.4.7
+    DOCKERIO_USERNAME:
+      from_secret: username.docker.io
+    DOCKERIO_PASSWORD:
+      from_secret: password.docker.io
+  commands:
+   - podman tag podman:build docker.io/gautada/podman:$PODMAN_VERSION
+   - podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
+   - podman push docker.io/gautada/podman:$PODMAN_VERSION
+  
