@@ -6,7 +6,7 @@ LABEL maintainer="Adam Gautier <adam@gautier.org>"
 LABEL description="This container is a podman installation for building OCI containers."
 
 USER root
-
+WORKDIR /
 VOLUME /opt/podman
 
 ARG PODMAN_VERSION
