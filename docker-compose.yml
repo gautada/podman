@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  podman:
+    build:
+      args:
+        ALPINE_VERSION: "latest"
+        PODMAN_VERSION: "4.3.0"
+      context: .
+      dockerfile: Containerfile
+      no_cache: true
+      tags:
+        - "podman:dev"
+    dns:
+      - 10.0.4.200
+      - 10.0.4.201
+    environment:
+      - SYSTEM_ENVIRONMENT=DEVELOPMENT
+    hostname: "podman"
+    image: "podman:dev"
+    privileged: true
+    ports:
+      - "8080:8080"
+      - "3000:3000"
+    volumes:
+      - "container:/mnt/volumes/container"
+      - "backup:/mnt/volumes/backup"
+        
+volumes:
+  container:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/mada/Workspace/podman/container-volume
+  backup:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/mada/Workspace/podman/backup-volume
+      
