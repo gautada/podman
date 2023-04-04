@@ -28,7 +28,8 @@ RUN /usr/sbin/addgroup -g $GID $USER \
  && /bin/echo "$USER:$USER" | chpasswd
 
 # PRIVILEGE:
-# COPY wheel  /etc/container/wheel
+COPY wheel  /etc/container/wheel
+RUN /bin/ln -fsv /etc/container/wheel /etc/sudoers.d/wheel
 
 # BACKUP:
 COPY backup /etc/container/backup
@@ -47,7 +48,7 @@ RUN /bin/chown -R $USER:$USER /mnt/volumes/container \
 # ╭――――――――――――――――――――╮
 # │ APPLICATION        │
 # ╰――――――――――――――――――――
-RUN /sbin/apk add --no-cache build-base yarn npm git
+RUN /sbin/apk add --no-cache build-base yarn npm git openssh-client openssh
 RUN /sbin/apk add --no-cache buildah podman fuse-overlayfs 
 # git slirp4netns sqlite
 
