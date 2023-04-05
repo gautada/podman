@@ -86,3 +86,6 @@ LOG_LEVEL = Default is info but can be overridden to debug, info, warn, error, e
 	- [podman](https://podman.io) is a daemonless container engine for developing, managing, and running OCI Containers on your Linux System. Containers can either be run as root or in rootless mode.
 - ## Details
 
+# Configuration Notes for drone
+
+- Test the CLI: `drone orgsecret info gautada password.docker.io`
