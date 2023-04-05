@@ -7,9 +7,10 @@
 #             [gist](https://gist.github.com/gautada/f185700af585a50b3884ad10c2b02f98)
 
 WETTY_USER="$(/usr/bin/whoami)"
-WETTY_TITLE="PKI Client"
+WETTY_TITLE="PODMAN"
 WETTY_COMMAND="/bin/ash"
 
+PODMAN_PORT="8181"
 
 ENTRYPOINT_PARAMS="$@"
 . /etc/profile
@@ -46,7 +47,7 @@ if [ -z "$@" ] ; then
  TEST=$?
  if [ $TEST -eq 1 ] ; then
   log "-i" "entrypoint" "Blocking podman($(app_version))"
-  /usr/bin/podman --log-level fatal system service --time 0 tcp://0.0.0.0:3000
+  /usr/bin/podman --log-level fatal system service --time 0 tcp://0.0.0.0:$PODMAN_PORT
   fi
  return 1
 else
@@ -55,7 +56,7 @@ else
  if [ $TEST -eq 1 ] ; then 
   log "-i" "entrypoint" "Forked podman($(app_version))"
   # tail -f /dev/null &
-  /usr/bin/podman --log-level fatal system service --time 0 tcp://0.0.0.0:3000 >> /mnt/volumes/container/_log 2>&1 &
+  /usr/bin/podman --log-level fatal system service --time 0 tcp://0.0.0.0:$PODMAN_PORT >> /mnt/volumes/container/_log 2>&1 &
  fi
  return 0
 fi
