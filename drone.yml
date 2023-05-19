@@ -1,35 +1,62 @@
 kind: pipeline
 type: exec
-name: Container Build - Podman
+name: CICD - Alpine Container
 
 platform:
   os: linux
   arch: arm64
 
 steps:
+
 - name: build
-  environment:
-    ALPINE_VERSION: "latest"
-    PODMAN_VERSION: 4.3.0
   commands:
-  - /usr/bin/podman build --build-arg ALPINE_VERSION=$ALPINE_VERSION --build-arg PODMAN_VERSION=$PODMAN_VERSION --build-arg DRONE_SERVER_VERSION=$DRONE_SERVER_VERSION --build-arg DRONE_CLI_VERSION=$DRONE_CLI_VERSION --build-arg DRONE_RUNNER_DOCKER_VERSION=$DRONE_RUNNER_DOCKER_VERSION --build-arg DRONE_RUNNER_EXEC_VERSION=$DRONE_RUNNER_EXEC_VERSION --build-arg DRONE_RUNNER_KUBE_VERSION=$DRONE_RUNNER_KUBE_VERSION --file Containerfile --label revision="$(git rev-parse HEAD)" --label version="$(date +%Y.%m.%d)" --format docker --no-cache --tag podman:drone .
-
-
-- name: publish
+  - /usr/bin/podman-compose build --no-cache
+  
+- name: test
   environment:
-    CONTAINER_NAME: "podman"
-    CONTAINER_VERSION: 4.3.0
     DOCKERIO_USERNAME:
       from_secret: username.docker.io
     DOCKERIO_PASSWORD:
       from_secret: password.docker.io
   commands:
-   - /usr/bin/podman tag $CONTAINER_NAME:drone docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:$CONTAINER_VERSION
-   - /usr/bin/podman tag $CONTAINER_NAME:drone docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:latest
-   - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
-   - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:$CONTAINER_VERSION
-   - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$CONTAINER_NAME:latest
-   
+  - echo "No tests are defined at this time."
+  - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
+  - /usr/bin/podman tag $(/usr/bin/compose-data --name):dev docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):dev
+  - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):dev
+  
+- name: integrate
+  environment:
+    DOCKERIO_USERNAME:
+      from_secret: username.docker.io
+    DOCKERIO_PASSWORD:
+      from_secret: password.docker.io
+  commands:
+  - /usr/bin/podman tag $(/usr/bin/compose-data --name):dev docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$(/usr/bin/compose-data --version)
+  - /usr/bin/podman tag $(/usr/bin/compose-data --name):dev docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):latest
+  - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
+  - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):latest
+  - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):$(/usr/bin/compose-data --version)
+  when:
+    branch:
+    - main
+
+
+- name: deploy
+  failure: ignore
+  environment:
+    DRONE_SERVER:
+      from_secret: server.drone.io
+    DRONE_TOKEN:
+      from_secret: token.drone.io
+  commands:
+  - /usr/bin/drone build create --branch main gautada/drone-container
+  - /usr/bin/drone build create --branch main gautada/gitea-container
+  - /usr/bin/drone build create --branch main gautada/postgresql-container
+  when:
+    branch:
+    - main
+    
 trigger:
-  branch:
-  - main
+  event:
+  - push
+
