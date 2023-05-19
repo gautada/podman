@@ -19,7 +19,7 @@ RUN /usr/sbin/groupmod --new-name $USER alpine
 # │ PACKAGES           │
 # ╰――――――――――――――――――――╯
  # ** CONTAINER MANAGER **
-RUN /sbin/apk add --no-cache podman \ 
+RUN /sbin/apk add --no-cache podman fuse-overlayfs \ 
  && /usr/sbin/usermod --add-subuids 100000-165535 $USER \
  && /usr/sbin/usermod --add-subgids 100000-165535 $USER 
 WORKDIR /

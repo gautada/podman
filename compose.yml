@@ -15,7 +15,7 @@ services:
     hostname: "podman"
     ports:
       - "8888:8080"
-#     privileged: true
+#    privileged: true
 #     volumes:
 #       # - "/Users/mada/Workspace/Volumes/Container:/mnt/volumes/container"
 #       # - "/Users/mada/Workspace/Volumes/Backup:/mnt/volumes/backup"
