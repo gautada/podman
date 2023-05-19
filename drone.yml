@@ -1,6 +1,6 @@
 kind: pipeline
 type: exec
-name: CICD - Pdoman Container
+name: CICD - Podman Container
 
 platform:
   os: linux
