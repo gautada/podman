@@ -1,0 +1,62 @@
+ARG ALPINE_VERSION="latest"
+
+FROM gautada/alpine:$ALPINE_VERSION as container
+# ╭――――――――――――――――――――╮
+# │ METADATA           │
+# ╰――――――――――――――――――――╯
+LABEL source="https://github.com/gautada/deven-container.git"
+LABEL maintainer="Adam Gautier <adam@gautier.org>"
+LABEL description="Podman container."
+
+# ╭――――――――――――――――――――╮
+# │ USER               │
+# ╰――――――――――――――――――――╯
+ARG USER="podman"
+RUN /usr/sbin/usermod --login $USER --home /home/$USER --move-home alpine
+RUN /usr/sbin/groupmod --new-name $USER alpine
+
+# ╭――――――――――――――――――――╮
+# │ PACKAGES           │
+# ╰――――――――――――――――――――╯
+ # ** CONTAINER MANAGER **
+RUN /sbin/apk add --no-cache podman \ 
+
+RUN /usr/sbin/usermod --add-subuids 100000-165535 $USER \
+ && /usr/sbin/usermod --add-subgids 100000-165535 $USER \
+
+WORKDIR /
+
+# ╭――――――――――――――――――――╮
+# │ STANDARD CONFIG    │
+# ╰――――――――――――――――――――╯
+# COPY backup /etc/container/backup
+COPY podman.health /etc/container/health.d/podman.health
+COPY entrypoint /etc/container/entrypoint
+COPY privileges /etc/container/privileges
+
+# ╭――――――――――――――――――――╮
+# │ CONTAINER          │
+# ╰――――――――――――――――――――╯
+USER $USER
+WORKDIR /home/$USER
+ 
+# RUN /bin/mkdir -p /tmp/podman-run-1001/podman \
+#  # && /bin/touch /tmp/podman-run-1001/podman/podman.sock \
+#  && /usr/bin/podman system connection add sock unix:///tmp/podman-run-1001/podman/podman.sock \
+#  &&  /usr/bin/podman system connection default sock \
+
+# ╭――――――――――――――――――――╮
+# │FINAL CONTAINER     │
+# ╰――――――――――――――――――――╯
+FROM scratch
+COPY --from=container / /
+ENTRYPOINT ["/usr/bin/container-entrypoint"]
+VOLUME /mnt/volumes/backup
+VOLUME /mnt/volumes/configmaps
+VOLUME /mnt/volumes/container
+VOLUME /mnt/volumes/secrets/namespace
+VOLUME /mnt/volumes/secrets/container
+EXPOSE 8080/tcp
+EXPOSE 8888/tcp
+USER podman
+WORKDIR /home/podman

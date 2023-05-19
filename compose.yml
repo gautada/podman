@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  podman:
+    build:
+      args:
+        ALPINE_VERSION: "latest"
+        CONTAINER_VERSION: "0.0.0"
+      context: .
+      dockerfile: container.build
+      tags:
+        - "podman:dev"
+        - "gautada/podman:dev" 
+    image: "podman:dev"
+    hostname: "podman"
+    privileged: true
+    ports:
+      - "8080:8080"
+      - "8888:8888"
+    volumes:
+      - "container:/mnt/volumes/container"
+      - "backup:/mnt/volumes/backup"
+        
+      
