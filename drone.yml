@@ -49,9 +49,7 @@ steps:
     DRONE_TOKEN:
       from_secret: token.drone.io
   commands:
-  - /usr/bin/drone build create --branch main gautada/drone-container
-  - /usr/bin/drone build create --branch main gautada/gitea-container
-  - /usr/bin/drone build create --branch main gautada/postgresql-container
+  - echo "Hello World!"
   when:
     branch:
     - main
