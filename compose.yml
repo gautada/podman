@@ -3,21 +3,36 @@ services:
   podman:
     build:
       args:
-        ALPINE_VERSION: "latest"
-        CONTAINER_VERSION: "0.0.0"
+        DEBIAN_VERSION: "latest"
+        CONTAINER_VERSION: "0.0.1"
       context: .
       dockerfile: container.build
+      no_cache: true
       tags:
         - "podman:dev"
-        - "gautada/podman:dev" 
+        - "gautada/podman:dev"
     image: "podman:dev"
     hostname: "podman"
-    privileged: true
     ports:
-      - "8080:8080"
-      - "8888:8888"
-    volumes:
-      - "container:/mnt/volumes/container"
-      - "backup:/mnt/volumes/backup"
-        
+      - "8888:8080"
+#     privileged: true
+#     volumes:
+#       # - "/Users/mada/Workspace/Volumes/Container:/mnt/volumes/container"
+#       # - "/Users/mada/Workspace/Volumes/Backup:/mnt/volumes/backup"
+#       - "/mnt/volumes/container/Container:/mnt/volumes/container"
+#       - "/mnt/volumes/container/Backup:/mnt/volumes/backup"
+#         
+# volumes:
+#   container:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: /Users/mada/Workspace/code/container-volume
+#   backup:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: /Users/mada/Workspace/code/backup-volume
       
