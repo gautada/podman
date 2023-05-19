@@ -20,7 +20,7 @@ steps:
     DOCKERIO_PASSWORD:
       from_secret: password.docker.io
   commands:
-  - echo "No tests are defined at this time."
+  - /usr/bin/podman run --interactive --rm --tty $(/usr/bin/compose-data --name):dev -- /usr/bin/container-health  
   - /usr/bin/podman login --username=$DOCKERIO_USERNAME --password=$DOCKERIO_PASSWORD docker.io
   - /usr/bin/podman tag $(/usr/bin/compose-data --name):dev docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):dev
   - /usr/bin/podman push docker.io/$DOCKERIO_USERNAME/$(/usr/bin/compose-data --name):dev

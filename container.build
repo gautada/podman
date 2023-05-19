@@ -30,7 +30,7 @@ WORKDIR /
 # COPY backup /etc/container/backup
 COPY podman.health /etc/container/health.d/podman.health
 COPY entrypoint /etc/container/entrypoint
-COPY privileges /etc/container/privileges
+# COPY privileges /etc/container/privileges
 
 # ╭――――――――――――――――――――╮
 # │ CONTAINER          │
