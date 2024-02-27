@@ -13,5 +13,5 @@ container_version() {
 
 container_entrypoint() {
  PODMAN_PORT=8888
- /usr/bin/podman --log-level fatal system service --time 0 tcp://0.0.0.0:$PODMAN_PORT 
+ /usr/bin/podman --log-level debug system service --time 0 tcp://0.0.0.0:$PODMAN_PORT 
 }
