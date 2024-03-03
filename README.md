@@ -6,6 +6,11 @@ FF
 
 ## Container
 
+```
+podman volume create --driver local --opt type=none --opt device=/mnt/volumes/container/configmaps --opt o=bind Configmap
+```
+
+
 This container launches the `podman` system service, `sshd` for remote connectivity, and `crond` for cleanup and maintenance.
  
 ### Versions
