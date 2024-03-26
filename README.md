@@ -1,6 +1,25 @@
 # podman-container
 
-FF
+init machine
+```
+podman machine init --cpus 4 --disk-size 20 --memory 4096
+```
+
+connect to vm
+```
+ssh -p 62949 -i /Users/mada/.ssh/podman-machine-default core@localhost
+```
+
+build a volume on the machine
+```
+podman volume create --driver local --opt type=none --opt device=/Volumes/Container --opt o=bind Container
+```
+
+run a container
+```
+podman create --interactive --name fluentd --publish-all --replace --rm --tty \
+              --volume Container:/mnt/volumes/container localhost/fluent:dev
+```
 
 [Podman](https://podman.io) is a daemonless container engine for developing, managing, and running Open Container Initiative (OCI) containers and container images on your Linux System.  
 
