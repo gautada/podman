@@ -11,7 +11,7 @@ LABEL description="Podman container."
 # ╭―
 # │ USER
 # ╰――――――――――――――――――――
-ARG USER=duplicity
+ARG USER=podman
 RUN /usr/sbin/usermod -l $USER alpine
 RUN /usr/sbin/usermod -d /home/$USER -m $USER
 RUN /usr/sbin/groupmod -n $USER alpine
@@ -70,5 +70,7 @@ VOLUME /mnt/volumes/configmaps
 VOLUME /mnt/volumes/container
 VOLUME /mnt/volumes/secrets
 VOLUME /mnt/volumes/source
+EXPOSE 2375/tcp
+# EXPOSE 2376/tcp # For encrypted connections using TLS
 WORKDIR /home/$USER
 
