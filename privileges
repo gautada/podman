@@ -1,0 +1,4 @@
+%privileged ALL = (ALL) NOPASSWD: /usr/sbin/crond
+%privileged ALL = (ALL) NOPASSWD: /usr/bin/podman
+
+
