@@ -13,7 +13,8 @@ container_version() {
 
 container_entrypoint() {
  PODMAN_PORT=2375
- /usr/bin/podman system connection add --default default tcp://localhost:$PODMAN_PORT
+ /usr/bin/podman system connection add --default pod tcp://localhost:$PODMAN_PORT
  /usr/bin/podman system connection add service tcp://podman.code.svc.cluster.local:$PODMAN_PORT
+ /usr/bin/podman system connection add service tcp://podman.gautier.org:$PODMAN_PORT
  /usr/bin/sudo /usr/bin/podman --log-level debug system service --time 0 tcp://0.0.0.0:$PODMAN_PORT 
 }
