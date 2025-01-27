@@ -5,7 +5,6 @@ on:
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
-  push:
     branches:
       - dev
 
@@ -21,5 +20,5 @@ jobs:
         uses: github/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: true
-          DEFAULT_BRANCH: main
+          DEFAULT_BRANCH: dev
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
