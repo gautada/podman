@@ -1,64 +1,58 @@
-ARG ALPINE_VERSION="latest"
+ARG ALPINE_VERSION=latest
 
-FROM gautada/alpine:$ALPINE_VERSION as container
+# │ STAGE: CONTAINER
+# ╰――――――――――――――――――――――――――――――――――――――――――――――――――――――
+FROM gautada/alpine:$ALPINE_VERSION as CONTAINER
+
+# ╭――――――――――――――――――――╮
+# │ VARIABLES          │
+# ╰――――――――――――――――――――╯
+ARG IMAGE_VERSION="5.3.2-r2"
+
 # ╭――――――――――――――――――――╮
 # │ METADATA           │
 # ╰――――――――――――――――――――╯
-LABEL source="https://github.com/gautada/deven-container.git"
-LABEL maintainer="Adam Gautier <adam@gautier.org>"
-LABEL description="Podman container."
+LABEL org.opencontainers.image.title="postgresql"
+LABEL org.opencontainers.image.description="A PostgreSQL database container."
+LABEL org.opencontainers.image.url="https://hub.docker.com/r/gautada/postgresql"
+LABEL org.opencontainers.image.source="https://github.com/gautada/postgresql"
+LABEL org.opencontainers.image.version="${CONTAINER_VERSION}"
+LABEL org.opencontainers.image.license="Upstream"
 
-# ╭―
-# │ USER
-# ╰――――――――――――――――――――
+# ╭――――――――――――――――――――╮
+# │ USER               │ 
+# ╰――――――――――――――――――――╯
 ARG USER=podman
-RUN /usr/sbin/usermod -l $USER alpine
-RUN /usr/sbin/usermod -d /home/$USER -m $USER
-RUN /usr/sbin/groupmod -n $USER alpine
-RUN /bin/echo "$USER:$USER" | /usr/sbin/chpasswd
+SHELL ["/bin/ash", "-o", "pipefail", "-c"]
+RUN /usr/sbin/usermod -l $USER alpine \
+ && /usr/sbin/usermod -d /home/$USER -m $USER \
+ && /usr/sbin/groupmod -n $USER alpine \
+ && /bin/echo "$USER:$USER" | /usr/sbin/chpasswd
 
-
-# ╭―
-# │ PRIVILEGES
-# ╰――――――――――――――――――――
+# ╭――――――――――――――――――――╮
+# │ PRIVILEGES         │  
+# ╰――――――――――――――――――――╯
 COPY privileges /etc/container/privileges
 
-# ╭―
-# │ BACKUP
-# ╰――――――――――――――――――――
+# ╭――――――――――――――――――――╮
+# │ BACKUPS            │  
+# ╰――――――――――――――――――――╯
 # No backup needed and even disable the automated hourly backup
 # COPY backup /etc/container/backup
-RUN rm -f /etc/periodic/hourly/container-backup
+# RUN rm -f /etc/periodic/hourly/container-backup
 
 # ╭―
 # │ ENTRYPOINT
 # ╰――――――――――――――――――――
 COPY entrypoint /etc/container/entrypoint
 
-
 # ╭――――――――――――――――――――╮
-# │ STANDARD CONFIG    │
+# │APPLICATION        │
 # ╰――――――――――――――――――――╯
-# COPY backup /etc/container/backup
-# COPY podman.health /etc/container/health.d/podman.health
-# COPY entrypoint /etc/container/entrypoint
-# COPY privileges /etc/container/privileges
-
-
-# ╭――――――――――――――――――――╮
-# │ APPLICATION        │
-# ╰――――――――――――――――――――╯
- # ** CONTAINER MANAGER **
+RUN /bin/sed -i 's|dl-cdn.alpinelinux.org/alpine/|mirror.math.princeton.edu/pub/alpinelinux/|g' /etc/apk/repositories
 RUN /sbin/apk add --no-cache podman fuse-overlayfs
 RUN /usr/sbin/usermod --add-subuids 100000-165535 $USER \
  && /usr/sbin/usermod --add-subgids 100000-165535 $USER 
-
-
-# WORKDIR / 
-# RUN /bin/mkdir -p /tmp/podman-run-1001/podman \
-#  # && /bin/touch /tmp/podman-run-1001/podman/podman.sock \
-#  && /usr/bin/podman system connection add sock unix:///tmp/podman-run-1001/podman/podman.sock \
-#  &&  /usr/bin/podman system connection default sock \
 
 # ╭――――――――――――――――――――╮
 # │ CONTAINER          │
