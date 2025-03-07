@@ -22,25 +22,25 @@ container_entrypoint() {
           /mnt/volumes/container/secrets 
  /usr/bin/sudo /usr/bin/podman system service --time 0 tcp://0.0.0.0:$PODMAN_PORT &
 
- /usr/bin/podman volume create \
+ /usr/bin/podman --connection service volume create \
 	--driver local \
 	--opt type=none \
 	--opt device=/mnt/volumes/container/data \
 	--opt o=bind Data
 
- /usr/bin/podman volume create \
+ /usr/bin/podman --connection service volume create \
 	--driver local \
 	--opt type=none \
 	--opt device=/mnt/volumes/container/backup \
 	--opt o=bind Backup
 
- /usr/bin/podman volume create \
+ /usr/bin/podman --connection service volume create \
 	--driver local \
 	--opt type=none \
 	--opt device=/mnt/volumes/container/configmaps \
 	--opt o=bind Configmaps
 
- /usr/bin/podman volume create \
+ /usr/bin/podman --connection service volume create \
 	--driver local \
 	--opt type=none \
 	--opt device=/mnt/volumes/container/secrets \
