@@ -37,7 +37,7 @@ This container launches the `podman` system service, `sshd` for remote connectiv
 
 ### Bootstrap
 
-As this is a core part of the build system for containers a manual bootstrap build must be defined to provide a mechanism to get this system initially working. Follow the following steps to bootstrap `podman`.
+As this is a core part of the build tool for containers a manual bootstrap build must be defined to provide a mechanism to get this system initially working. Follow the following steps to bootstrap `podman`.
 
 1. Checkout the **podman-container** repository
 ```
