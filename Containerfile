@@ -49,9 +49,9 @@ COPY entrypoint /etc/container/entrypoint
 # ╭――――――――――――――――――――╮
 # │APPLICATION        │
 # ╰――――――――――――――――――――╯
-RUN /bin/sed -i 's|dl-cdn.alpinelinux.org/alpine/|mirror.math.princeton.edu/pub/alpinelinux/|g' /etc/apk/repositories
-RUN /sbin/apk add --no-cache podman fuse-overlayfs
-RUN /usr/sbin/usermod --add-subuids 100000-165535 $USER \
+RUN /bin/sed -i 's|dl-cdn.alpinelinux.org/alpine/|mirror.math.princeton.edu/pub/alpinelinux/|g' /etc/apk/repositories \
+ && /sbin/apk add --no-cache podman fuse-overlayfs \
+ && /usr/sbin/usermod --add-subuids 100000-165535 $USER \
  && /usr/sbin/usermod --add-subgids 100000-165535 $USER 
 
 # ╭――――――――――――――――――――╮
@@ -65,6 +65,7 @@ VOLUME /mnt/volumes/container
 VOLUME /mnt/volumes/secrets
 VOLUME /mnt/volumes/source
 EXPOSE 2375/tcp
+EXPOSE 8080/tcp
 # EXPOSE 2376/tcp # For encrypted connections using TLS
 WORKDIR /home/$USER
 
