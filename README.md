@@ -1,4 +1,9 @@
 # podman
+<<<<<<< HEAD
+=======
+
+FF: [Podman](https://podman.io) Manage containers, pods, and images with Podman. Seamlessly work with containers and Kubernetes from your local environment.
+>>>>>>> 0302c33 (FF trying updated cicd)
 
 [Podman](https://podman.io) Manage containers, pods, and images with Podman.
 Seamlessly work with containers and Kubernetes from your local environment.
