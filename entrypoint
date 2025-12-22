@@ -14,8 +14,8 @@ container_version() {
 container_entrypoint() {
  PODMAN_PORT=2375
  /usr/bin/podman system connection add --default pod tcp://localhost:$PODMAN_PORT
- /usr/bin/podman system connection add service tcp://podman.code.svc.cluster.local:$PODMAN_PORT
- /usr/bin/podman system connection add service tcp://podman.gautier.org:$PODMAN_PORT
+ # /usr/bin/podman system connection add service tcp://podman.code.svc.cluster.local:$PODMAN_PORT
+ # /usr/bin/podman system connection add service tcp://podman.gautier.org:$PODMAN_PORT
  mkdir -p /mnt/volumes/container/data \
 	  /mnt/volumes/container/backup \
           /mnt/volumes/container/configmaps \
