@@ -8,7 +8,7 @@ FROM gautada/alpine:$ALPINE_VERSION as CONTAINER
 # │ METADATA           │
 # ╰――――――――――――――――――――╯
 LABEL org.opencontainers.image.title="${IMAGE_NAME}"
-LABEL org.opencontainers.image.description="A PodMan OCI managment container."
+LABEL org.opencontainers.image.description="A podman OCI managment container."
 LABEL org.opencontainers.image.url="https://hub.docker.com/r/gautada/podman"
 LABEL org.opencontainers.image.source="https://github.com/gautada/podman"
 LABEL org.opencontainers.image.version="${CONTAINER_VERSION}"
