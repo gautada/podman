@@ -2,4 +2,4 @@
 %privileged ALL = (ALL) NOPASSWD: /usr/bin/podman
 %privileged ALL = (ALL) NOPASSWD: /usr/bin/vi
 %privileged ALL = (ALL) NOPASSWD: /bin/kill
-
+%privileged ALL = (ALL) NOPASSWD: /sbin/apk
