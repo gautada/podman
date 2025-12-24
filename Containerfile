@@ -48,12 +48,11 @@ RUN /sbin/apk add --no-cache podman fuse-overlayfs \
  && /usr/sbin/usermod --add-subuids 100000-165535 $USER \
  && /usr/sbin/usermod --add-subgids 100000-165535 $USER 
 
-ARG PODMAN_PORT=2375
 RUN mkdir -pv /mnt/volumes/data/data \
  /mnt/volumes/data/secrets \
  /mnt/volumes/data/backup \
  /mnt/volumes/data/configmaps
-
+ARG PODMAN_PORT=2375
 # RUN /usr/bin/podman system service --time 0 tcp://0.0.0.0:$PODMAN_PORT &
 # RUN PODMAN_PID=$!
 # RUN echo "${PODMAN_PID}"
@@ -72,4 +71,5 @@ USER $USER
 EXPOSE 2375/tcp
 WORKDIR /home/$USER
 
-RUN /usr/bin/podman system connection add --default pod tcp://localhost:$PODMAN_PORT
+RUN /usr/bin/podman system connection add \
+ --default pod tcp://localhost:$PODMAN_PORT
