@@ -1,4 +1,4 @@
-ARG ALPINE_VERSION=3.22
+ARG ALPINE_VERSION=3.23
 ARG IMAGE_NAME="podman"
 ARG IMAGE_VERSION="5.6.1"
 
@@ -39,7 +39,7 @@ COPY privileges /etc/container/privileges
 # ╭――――――――――――――――――――╮
 # │ ENTRYPOINT         │
 # ╰――――――――――――――――――――╯
-COPY entrypoint /etc/container/entrypoint
+COPY container.init /etc/services.d/container/run
 
 # ╭――――――――――――――――――――╮
 # │ APPLICATION        │
@@ -48,15 +48,28 @@ RUN /sbin/apk add --no-cache podman fuse-overlayfs \
  && /usr/sbin/usermod --add-subuids 100000-165535 $USER \
  && /usr/sbin/usermod --add-subgids 100000-165535 $USER 
 
+ARG PODMAN_PORT=2375
+RUN mkdir -pv /mnt/volumes/data/data \
+ /mnt/volumes/data/secrets \
+ /mnt/volumes/data/backup \
+ /mnt/volumes/data/configmaps
+
+# RUN /usr/bin/podman system service --time 0 tcp://0.0.0.0:$PODMAN_PORT &
+# RUN PODMAN_PID=$!
+# RUN echo "${PODMAN_PID}"
+# RUN /usr/bin/podman volume create --driver local --opt type=none --opt device=/mnt/volumes/container/data --opt o=bind Data
+
+
 # ╭――――――――――――――――――――╮
 # │ CONFIGUTATION      │
 # ╰――――――――――――――――――――╯
 RUN /bin/chown -R $USER:$USER /home/$USER
 USER $USER
-VOLUME /mnt/volumes/backup
-VOLUME /mnt/volumes/configmaps
-VOLUME /mnt/volumes/container
-VOLUME /mnt/volumes/secrets
+# VOLUME /mnt/volumes/backup
+# VOLUME /mnt/volumes/configmaps
+# VOLUME /mnt/volumes/container
+# VOLUME /mnt/volumes/secrets
 EXPOSE 2375/tcp
 WORKDIR /home/$USER
 
+RUN /usr/bin/podman system connection add --default pod tcp://localhost:$PODMAN_PORT
