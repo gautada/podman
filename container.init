@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+# echo "Configuring 'podman' environment"
+# mkdir -vp /mnt/volumes/container/data \
+#  /mnt/volumes/container/backup \
+#  /mnt/volumes/container/configmaps \
+#  /mnt/volumes/container/secrets 
+
+echo "Starting 'podman' as headless server"
+_cmd="/usr/bin/podman system service --time 0 tcp://0.0.0.0:${PODMAN_PORT}"
+echo "COMMAND: ${_cmd}"
+exec "${_cmd}"
+

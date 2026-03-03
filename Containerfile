@@ -1,27 +1,26 @@
-ARG ALPINE_VERSION=3.22
-ARG IMAGE_NAME="podman"
-ARG IMAGE_VERSION="5.6.1"
+ARG CONTAINER_VERSION=13.3
+ARG IMAGE_NAME=podman
 
-FROM gautada/alpine:$ALPINE_VERSION as CONTAINER
+FROM docker.io/gautada/debian:${CONTAINER_VERSION} AS container
 
 # ╭――――――――――――――――――――╮
 # │ METADATA           │
 # ╰――――――――――――――――――――╯
 LABEL org.opencontainers.image.title="${IMAGE_NAME}"
-LABEL org.opencontainers.image.description="A PodMan OCI managment container."
+LABEL org.opencontainers.image.description="A podman OCI management container."
 LABEL org.opencontainers.image.url="https://hub.docker.com/r/gautada/podman"
 LABEL org.opencontainers.image.source="https://github.com/gautada/podman"
-LABEL org.opencontainers.image.version="${CONTAINER_VERSION}"
 LABEL org.opencontainers.image.license="Upstream"
 
 # ╭――――――――――――――――――――╮
-# │ USER               │ 
+# │ USER               │
 # ╰――――――――――――――――――――╯
+# Rename the base debian user to podman.
+# Follows the same pattern as other gautada containers.
 ARG USER=podman
-SHELL ["/bin/ash", "-o", "pipefail", "-c"]
-RUN /usr/sbin/usermod -l $USER alpine \
+RUN /usr/sbin/usermod -l $USER debian \
  && /usr/sbin/usermod -d /home/$USER -m $USER \
- && /usr/sbin/groupmod -n $USER alpine \
+ && /usr/sbin/groupmod -n $USER debian \
  && /bin/echo "$USER:$USER" | /usr/sbin/chpasswd
 
 # ╭――――――――――――――――――――╮
@@ -30,33 +29,71 @@ RUN /usr/sbin/usermod -l $USER alpine \
 COPY privileges /etc/container/privileges
 
 # ╭――――――――――――――――――――╮
-# │ BACKUPS            │
+# │ PACKAGES           │
 # ╰――――――――――――――――――――╯
-# No backup needed and even disable the automated hourly backup
-# COPY backup /etc/container/backup
-# RUN rm -f /etc/periodic/hourly/container-backup
+# Install podman and fuse-overlayfs for rootless container operation.
+# DL3008: package version pinning is not practical for system-level
+# packages resolved via apt; suppressed explicitly.
+# hadolint ignore=DL3008
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      curl \
+      fuse-overlayfs \
+      jq \
+      podman \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+# ╭――――――――――――――――――――╮
+# │ ROOTLESS SETUP     │
+# ╰――――――――――――――――――――╯
+# Allocate subordinate uid/gid ranges required for rootless podman.
+RUN /usr/sbin/usermod --add-subuids 100000-165535 $USER \
+ && /usr/sbin/usermod --add-subgids 100000-165535 $USER
+
+# ╭――――――――――――――――――――╮
+# │ VERSION            │
+# ╰――――――――――――――――――――╯
+# Resolve the latest containers/podman release from GitHub API at build time.
+# Fails the build if the API returns empty or null — no silent fallback.
+# Logs both the installed apt version and the current upstream release.
+RUN PODMAN_LATEST=$(curl -sL "https://api.github.com/repos/containers/podman/releases/latest" \
+    | jq -r '.tag_name' \
+    | sed 's/^v//' \
+    | tr -d '[:space:]') \
+ && { [ -n "$PODMAN_LATEST" ] && [ "$PODMAN_LATEST" != "null" ] \
+      || { echo "ERROR: failed to resolve latest podman version from GitHub API" >&2; exit 1; }; } \
+ && echo "Latest podman release (GitHub): ${PODMAN_LATEST}" \
+ && echo "Installed podman version: $(podman --version | awk '{print $3}')"
+
+# Provides /usr/bin/container-version — returns installed podman version.
+COPY version.sh /usr/bin/container-version
+RUN chmod +x /usr/bin/container-version
+
+# ╭――――――――――――――――――――╮
+# │ LATEST             │
+# ╰――――――――――――――――――――╯
+# Provides /usr/bin/container-latest — fetches the latest release tag
+# from containers/podman on GitHub (strips 'v' prefix).
+COPY latest.sh /usr/bin/container-latest
+RUN chmod +x /usr/bin/container-latest
 
 # ╭――――――――――――――――――――╮
 # │ ENTRYPOINT         │
 # ╰――――――――――――――――――――╯
-COPY entrypoint /etc/container/entrypoint
+# s6 service definition: starts podman as a headless TCP service.
+COPY container.init /etc/services.d/container/run
+RUN chmod +x /etc/services.d/container/run
 
 # ╭――――――――――――――――――――╮
-# │ APPLICATION        │
+# │ CONFIGURATION      │
 # ╰――――――――――――――――――――╯
-RUN /sbin/apk add --no-cache podman fuse-overlayfs \
- && /usr/sbin/usermod --add-subuids 100000-165535 $USER \
- && /usr/sbin/usermod --add-subgids 100000-165535 $USER 
+RUN mkdir -pv /mnt/volumes/data/data \
+              /mnt/volumes/data/secrets \
+              /mnt/volumes/data/backup \
+              /mnt/volumes/data/configmaps \
+ && /bin/chown -R $USER:$USER /home/$USER
 
-# ╭――――――――――――――――――――╮
-# │ CONFIGUTATION      │
-# ╰――――――――――――――――――――╯
-RUN /bin/chown -R $USER:$USER /home/$USER
-USER $USER
-VOLUME /mnt/volumes/backup
-VOLUME /mnt/volumes/configmaps
-VOLUME /mnt/volumes/container
-VOLUME /mnt/volumes/secrets
-EXPOSE 2375/tcp
+ARG PODMAN_PORT=2375
+EXPOSE ${PODMAN_PORT}/tcp
 WORKDIR /home/$USER
-
