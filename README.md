@@ -5,13 +5,7 @@ Seamlessly work with containers and Kubernetes from your local environment.
 
 This is a free standing of podman that runs securely in my k8s environment.
 
-## Volumes
+## Deployment
 
-Volumes are very important to make the podman container work like the k8s
-environment the containers will be running within.
-
-```/bin/zsh
-podman volume create --driver local --opt type=none \
- --opt device=/Users/mada/.cache/containers/backup \
- --opt o=bind Backup
-```
+The deployment of the podman in is going to be used to build containers
+remotely.
