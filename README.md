@@ -9,3 +9,7 @@ This is a free standing of podman that runs securely in my k8s environment.
 
 The deployment of the podman in is going to be used to build containers
 remotely.
+
+## Telemetry
+
+[Refer](https://github.com/containers/prometheus-podman-exporter)
