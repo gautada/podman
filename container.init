@@ -8,8 +8,8 @@ set -e
 #  /mnt/volumes/container/secrets 
 
 echo "Starting 'podman' as headless server"
-echo "${PODMAN_PORT}"
-_cmd="/usr/bin/podman system service --time 0 tcp://0.0.0.0:2375"
-echo "COMMAND: ${_cmd}"
-exec "${_cmd}"
-
+# echo "${PODMAN_PORT}"
+# _cmd="/usr/bin/podman system service --time 0 tcp://0.0.0.0:2375"
+# echo "COMMAND: ${_cmd}"
+# exec "${_cmd}"
+/usr/bin/podman system service --time 0 tcp://0.0.0.0:2375
