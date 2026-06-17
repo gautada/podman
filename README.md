@@ -1,15 +1,15 @@
 # podman
 
-FF: [Podman](https://podman.io) Manage containers, pods, and images with Podman.
+ [Podman](https://podman.io) Manage containers, pods, and images with Podman.
 Seamlessly work with containers and Kubernetes from your local environment.
 
-## Volumes
+This is a free standing of podman that runs securely in my k8s environment.
 
-Volumes are very important to make the podman container work like the k8s
-environment the containers will be running within.
+## Deployment
 
-```/bin/zsh
-podman volume create --driver local --opt type=none \
- --opt device=/Users/mada/.cache/containers/backup \
- --opt o=bind Backup
-```
+The deployment of the podman in is going to be used to build containers
+remotely.
+
+## Telemetry
+
+[Refer](https://github.com/containers/prometheus-podman-exporter)

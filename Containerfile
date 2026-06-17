@@ -23,6 +23,7 @@ RUN /usr/sbin/usermod -l $USER debian \
  && /usr/sbin/groupmod -n $USER debian \
  && /bin/echo "$USER:$USER" | /usr/sbin/chpasswd
 
+
 # ╭――――――――――――――――――――╮
 # │ PRIVILEGES         │
 # ╰――――――――――――――――――――╯
@@ -40,6 +41,9 @@ RUN apt-get update \
       curl \
       fuse-overlayfs \
       jq \
+      uidmap \
+      passt \
+      nftables \
       podman \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
@@ -50,6 +54,11 @@ RUN apt-get update \
 # Allocate subordinate uid/gid ranges required for rootless podman.
 RUN /usr/sbin/usermod --add-subuids 100000-165535 $USER \
  && /usr/sbin/usermod --add-subgids 100000-165535 $USER
+
+# ╭――――――――――――――――――――╮
+# │ TEST FILE          │
+# ╰――――――――――――――――――――╯
+COPY --chown=$USER:$USER Containerfile.test /home/$USER/Containerfile
 
 # ╭――――――――――――――――――――╮
 # │ VERSION            │

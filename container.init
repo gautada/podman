@@ -8,7 +8,31 @@ set -e
 #  /mnt/volumes/container/secrets 
 
 echo "Starting 'podman' as headless server"
-_cmd="/usr/bin/podman system service --time 0 tcp://0.0.0.0:${PODMAN_PORT}"
-echo "COMMAND: ${_cmd}"
-exec "${_cmd}"
+# echo "${PODMAN_PORT}"
+# _cmd="/usr/bin/podman system service --time 0 tcp://0.0.0.0:2375"
+# echo "COMMAND: ${_cmd}"
+# exec "${_cmd}"
+PODMAN_PORT=2375
+/usr/bin/podman system connection add --default pod tcp://localhost:${PODMAN_PORT}
+/usr/bin/podman system connection add service tcp://podman.code.svc.cluster.local:${PODMAN_PORT}
+/usr/bin/podman system connection add public tcp://podman.gautier.org:${PODMAN_PORT}
+/usr/bin/podman system service --time 0 tcp://0.0.0.0:${PODMAN_PORT} &
+PODMAN_PID=$!
+/usr/bin/podman volume create --driver local --opt type=none \
+ --opt device=/mnt/volumes/container/data \
+ --opt o=bind Data
+/usr/bin/podman volume create --driver local --opt type=none \
+ --opt device=/mnt/volumes/container/backup \
+ --opt o=bind Backup
+/usr/bin/podman volume create --driver local --opt type=none \
+ --opt device=/mnt/volumes/container/configmaps \
+ --opt o=bind Configmaps
+/usr/bin/podman volume create --driver local --opt type=none \
+ --opt device=/mnt/volumes/container/secrets \
+ --opt o=bind Secrets
+# The -9 flag sends SIGKILL, which forcefully terminates the process. Without
+# it, kill sends SIGTERM, giving the process a chance to clean up before
+# exiting.
+kill ${PODMAN_PID}
+/usr/bin/podman system service --time 0 tcp://0.0.0.0:${PODMAN_PORT}
 
