@@ -89,7 +89,7 @@ RUN chmod 0755 /usr/bin/container-version
 # ╰――――――――――――――――――――╯
 # Provides /usr/bin/container-latest — fetches the latest release tag
 # from containers/podman on GitHub (strips 'v' prefix).
-COPY latest.sh /usr/bin/container-latest
+COPY usr/bin/container-latest /usr/bin/container-latest
 RUN chmod +x /usr/bin/container-latest
 
 # ╭――――――――――――――――――――╮
