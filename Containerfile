@@ -15,15 +15,14 @@ LABEL org.opencontainers.image.license="Upstream"
 # ╭――――――――――――――――――――╮
 # │ USER               │
 # ╰――――――――――――――――――――╯
-# Rename the base debian user to hermes. Follows the same pattern as other
+# Rename the base debian user to bob. Follows the same pattern as other
 # gautada containers (e.g. gautada/homepage).
 ARG OLDUSER=debian
 ARG USER=bob
 RUN /usr/sbin/usermod -l $USER $OLDUSER \
  && /usr/sbin/usermod -d /home/$USER -m $USER \
  && /usr/sbin/groupmod -n $USER $OLDUSER \
- && /bin/echo "$USER:$USER" | /usr/sbin/chpasswd \
- && ln -fsv /mnt/volumes/data /home/${USER}/.hermes
+ && /bin/echo "$USER:$USER" | /usr/sbin/chpasswd
 
 # ╭――――――――――――――――――――╮
 # │ PRIVILEGES         │
