@@ -91,8 +91,8 @@ RUN chmod +x /usr/bin/container-latest
 # │ ENTRYPOINT         │
 # ╰――――――――――――――――――――╯
 # s6 service definition: starts podman as a headless TCP service.
-COPY container.init /etc/services.d/container/run
-RUN chmod +x /etc/services.d/container/run
+COPY etc/services.d/podman/run /etc/services.d/podman/run
+RUN chmod +x /etc/services.d/podman/run
 
 # ╭――――――――――――――――――――╮
 # │ CONFIGURATION      │
