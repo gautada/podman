@@ -28,5 +28,7 @@ manifest/
 .jscpd.json
 .markdownlint.yaml
 .pre-commit-config.yaml
+.shellcheckrc
 .sqlfluff
 .yamllint.yaml
+pyproject.toml
