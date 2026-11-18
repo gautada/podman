@@ -28,7 +28,7 @@ RUN /usr/sbin/usermod -l $USER $OLDUSER \
 # ╭――――――――――――――――――――╮
 # │ PRIVILEGES         │
 # ╰――――――――――――――――――――╯
-COPY privileges /etc/container/privileges
+# COPY privileges /etc/container/privileges
 
 # ╭――――――――――――――――――――╮
 # │ PACKAGES           │
