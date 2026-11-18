@@ -15,14 +15,15 @@ LABEL org.opencontainers.image.license="Upstream"
 # ╭――――――――――――――――――――╮
 # │ USER               │
 # ╰――――――――――――――――――――╯
-# Rename the base debian user to podman.
-# Follows the same pattern as other gautada containers.
-ARG USER=podman
-RUN /usr/sbin/usermod -l $USER debian \
+# Rename the base debian user to hermes. Follows the same pattern as other
+# gautada containers (e.g. gautada/homepage).
+ARG OLDUSER=debian
+ARG USER=bob
+RUN /usr/sbin/usermod -l $USER $OLDUSER \
  && /usr/sbin/usermod -d /home/$USER -m $USER \
- && /usr/sbin/groupmod -n $USER debian \
- && /bin/echo "$USER:$USER" | /usr/sbin/chpasswd
-
+ && /usr/sbin/groupmod -n $USER $OLDUSER \
+ && /bin/echo "$USER:$USER" | /usr/sbin/chpasswd \
+ && ln -fsv /mnt/volumes/data /home/${USER}/.hermes
 
 # ╭――――――――――――――――――――╮
 # │ PRIVILEGES         │
@@ -63,21 +64,29 @@ COPY --chown=$USER:$USER Containerfile.test /home/$USER/Containerfile
 # ╭――――――――――――――――――――╮
 # │ VERSION            │
 # ╰――――――――――――――――――――╯
-# Resolve the latest containers/podman release from GitHub API at build time.
-# Fails the build if the API returns empty or null — no silent fallback.
-# Logs both the installed apt version and the current upstream release.
-RUN PODMAN_LATEST=$(curl -sL "https://api.github.com/repos/containers/podman/releases/latest" \
-    | jq -r '.tag_name' \
-    | sed 's/^v//' \
-    | tr -d '[:space:]') \
- && { [ -n "$PODMAN_LATEST" ] && [ "$PODMAN_LATEST" != "null" ] \
-      || { echo "ERROR: failed to resolve latest podman version from GitHub API" >&2; exit 1; }; } \
- && echo "Latest podman release (GitHub): ${PODMAN_LATEST}" \
- && echo "Installed podman version: $(podman --version | awk '{print $3}')"
+# ╭――――――――――――――――――╮
+# │ VERSION          │
+# ╰――――――――――――――――――╯
+# Override the base image's Debian version reporter with the application
+# version expected by the container version and health mechanisms.
+COPY usr/bin/container-version /usr/bin/container-version
+RUN chmod 0755 /usr/bin/container-version
 
-# Provides /usr/bin/container-version — returns installed podman version.
-COPY version.sh /usr/bin/container-version
-RUN chmod +x /usr/bin/container-version
+# # Resolve the latest containers/podman release from GitHub API at build time.
+# # Fails the build if the API returns empty or null — no silent fallback.
+# # Logs both the installed apt version and the current upstream release.
+# RUN PODMAN_LATEST=$(curl -sL "https://api.github.com/repos/containers/podman/releases/latest" \
+#     | jq -r '.tag_name' \
+#     | sed 's/^v//' \
+#     | tr -d '[:space:]') \
+#  && { [ -n "$PODMAN_LATEST" ] && [ "$PODMAN_LATEST" != "null" ] \
+#       || { echo "ERROR: failed to resolve latest podman version from GitHub API" >&2; exit 1; }; } \
+#  && echo "Latest podman release (GitHub): ${PODMAN_LATEST}" \
+#  && echo "Installed podman version: $(podman --version | awk '{print $3}')"
+# 
+# # Provides /usr/bin/container-version — returns installed podman version.
+# COPY version.sh /usr/bin/container-version
+# RUN chmod +x /usr/bin/container-version
 
 # ╭――――――――――――――――――――╮
 # │ LATEST             │
