@@ -61,9 +61,6 @@ RUN /usr/sbin/usermod --add-subuids 100000-165535 $USER \
 # ╰――――――――――――――――――――╯
 COPY --chown=$USER:$USER Containerfile.test /home/$USER/Containerfile
 
-# ╭――――――――――――――――――――╮
-# │ VERSION            │
-# ╰――――――――――――――――――――╯
 # ╭――――――――――――――――――╮
 # │ VERSION          │
 # ╰――――――――――――――――――╯
@@ -71,7 +68,6 @@ COPY --chown=$USER:$USER Containerfile.test /home/$USER/Containerfile
 # version expected by the container version and health mechanisms.
 COPY usr/bin/container-version /usr/bin/container-version
 RUN chmod 0755 /usr/bin/container-version
-
 # # Resolve the latest containers/podman release from GitHub API at build time.
 # # Fails the build if the API returns empty or null — no silent fallback.
 # # Logs both the installed apt version and the current upstream release.
