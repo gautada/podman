@@ -1,7 +1,7 @@
-ARG CONTAINER_VERSION=13.3
+ARG DEBIAN_VERSION=13.7
 ARG IMAGE_NAME=podman
 
-FROM docker.io/gautada/debian:${CONTAINER_VERSION} AS container
+FROM docker.io/gautada/debian:${DEBIAN_VERSION} AS container
 
 # ╭――――――――――――――――――――╮
 # │ METADATA           │
@@ -99,7 +99,7 @@ RUN chmod +x /usr/bin/container-latest
 # │ ENTRYPOINT         │
 # ╰――――――――――――――――――――╯
 # s6 service definition: starts podman as a headless TCP service.
-COPY etc/services.d/podman/run /etc/services.d/podman/run
+COPY --chown=$USER:uucp etc/services.d/podman/run /etc/services.d/podman/run
 RUN chmod +x /etc/services.d/podman/run
 
 # ╭――――――――――――――――――――╮
