@@ -5,7 +5,7 @@ set -e
 # mkdir -vp /mnt/volumes/container/data \
 #  /mnt/volumes/container/backup \
 #  /mnt/volumes/container/configmaps \
-#  /mnt/volumes/container/secrets 
+#  /mnt/volumes/container/secrets
 
 echo "Starting 'podman' as headless server"
 # echo "${PODMAN_PORT}"
@@ -35,4 +35,3 @@ PODMAN_PID=$!
 # exiting.
 kill ${PODMAN_PID}
 /usr/bin/podman system service --time 0 tcp://0.0.0.0:${PODMAN_PORT}
-
