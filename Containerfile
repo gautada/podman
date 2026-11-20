@@ -108,11 +108,14 @@ RUN chmod +x /etc/services.d/podman/run
 # Copy storage.conf and podman-connections.json to the persistent
 # configuration volume mount point and symlink them into place.
 COPY etc/containers/storage.conf /mnt/volumes/configuration/storage.conf
-RUN ln -sf /mnt/volumes/configuration/storage.conf /etc/containers/storage.conf
-
 COPY home/bob/.config/containers/podman-connections.json \
  /mnt/volumes/configuration/podman-connections.json
+
+# Rootless podman reads ~/.config/containers/ not /etc/containers/.
+# Symlink both storage.conf and podman-connections.json into the user config dir.
 RUN mkdir -p /home/$USER/.config/containers \
+ && ln -sf /mnt/volumes/configuration/storage.conf \
+    /home/$USER/.config/containers/storage.conf \
  && ln -sf /mnt/volumes/configuration/podman-connections.json \
     /home/$USER/.config/containers/podman-connections.json
 
