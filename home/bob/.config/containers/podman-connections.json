@@ -1,0 +1,11 @@
+{
+ "Connection": {
+  "Default": "pod",
+  "Connections": {
+   "pod": {
+    "URI": "tcp://localhost:2375"
+   }
+  }
+ },
+ "Farm": {}
+}

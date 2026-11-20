@@ -5,23 +5,20 @@ set -e
 echo "Starting 'podman' as headless server"
 PODMAN_PORT=2375
 
-# Register named connections
-/usr/bin/podman system connection add --default pod tcp://localhost:${PODMAN_PORT}
-/usr/bin/podman system connection add service tcp://podman.code.svc.cluster.local:${PODMAN_PORT}
-/usr/bin/podman system connection add public tcp://podman.gautier.org:${PODMAN_PORT}
+# Connections: /home/bob/.config/containers/podman-connections.json
 
-# Create bind-mount volumes (works without the daemon running)
+# Create bind-mount volumes
 /usr/bin/podman volume create --driver local --opt type=none \
- --opt device=/mnt/volumes/container/data \
+ --opt device=/mnt/volumes/data/data \
  --opt o=bind Data
 /usr/bin/podman volume create --driver local --opt type=none \
- --opt device=/mnt/volumes/container/backup \
+ --opt device=/mnt/volumes/data/backup \
  --opt o=bind Backup
 /usr/bin/podman volume create --driver local --opt type=none \
- --opt device=/mnt/volumes/container/configmaps \
+ --opt device=/mnt/volumes/data/configmaps \
  --opt o=bind Configmaps
 /usr/bin/podman volume create --driver local --opt type=none \
- --opt device=/mnt/volumes/container/secrets \
+ --opt device=/mnt/volumes/data/secrets \
  --opt o=bind Secrets
 
 # Start the API service (foreground, single process)
