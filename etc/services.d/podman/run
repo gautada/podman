@@ -5,8 +5,21 @@ set -e
 echo "Starting 'podman' as headless server"
 PODMAN_PORT=2375
 
-# Connections are defined in /home/bob/.config/containers/podman-connections.json
-# Volumes are TODO — see github.com/gautada/podman#40
+# Connections: /home/bob/.config/containers/podman-connections.json
+
+# Create bind-mount volumes
+/usr/bin/podman volume create --driver local --opt type=none \
+ --opt device=/mnt/volumes/data/data \
+ --opt o=bind Data
+/usr/bin/podman volume create --driver local --opt type=none \
+ --opt device=/mnt/volumes/data/backup \
+ --opt o=bind Backup
+/usr/bin/podman volume create --driver local --opt type=none \
+ --opt device=/mnt/volumes/data/configmaps \
+ --opt o=bind Configmaps
+/usr/bin/podman volume create --driver local --opt type=none \
+ --opt device=/mnt/volumes/data/secrets \
+ --opt o=bind Secrets
 
 # Start the API service (foreground, single process)
 exec /usr/bin/podman system service --time 0 tcp://0.0.0.0:${PODMAN_PORT}
