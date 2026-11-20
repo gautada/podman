@@ -105,10 +105,16 @@ RUN chmod +x /etc/services.d/podman/run
 # ╭――――――――――――――――――――╮
 # │ CONFIGURATION      │
 # ╰――――――――――――――――――――╯
-# Copy storage.conf to the persistent configuration volume mount point and
-# symlink it into /etc/containers/ so podman picks it up system-wide.
+# Copy storage.conf and podman-connections.json to the persistent
+# configuration volume mount point and symlink them into place.
 COPY etc/containers/storage.conf /mnt/volumes/configuration/storage.conf
 RUN ln -sf /mnt/volumes/configuration/storage.conf /etc/containers/storage.conf
+
+COPY home/bob/.config/containers/podman-connections.json \
+ /mnt/volumes/configuration/podman-connections.json
+RUN mkdir -p /home/$USER/.config/containers \
+ && ln -sf /mnt/volumes/configuration/podman-connections.json \
+    /home/$USER/.config/containers/podman-connections.json
 
 RUN mkdir -pv /mnt/volumes/data/data \
               /mnt/volumes/data/secrets \
