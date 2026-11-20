@@ -1,0 +1,16 @@
+---
+name: Branch cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  delete-branch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: gautada/cicd/.github/actions/delete-merged-branch@main
