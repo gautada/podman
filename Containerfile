@@ -64,6 +64,16 @@ RUN /usr/sbin/usermod --add-subuids 100000-165535 $USER \
 # ╰――――――――――――――――――――╯
 COPY --chown=$USER:$USER Containerfile.test /home/$USER/Containerfile
 
+# ╭――――――――――――――――――――╮
+# │ HEALTH           │
+# ╰――――――――――――――――――――╯
+# Add a podman-specific health drop-in that verifies the podman binary
+# is available and responsive.  The base image (gautada/debian) provides
+# /usr/bin/container-test as a symlink to container-health, which runs
+# all scripts in /etc/health.d/.
+COPY etc/health.d/podman-check /etc/health.d/podman-check
+RUN chmod +x /etc/health.d/podman-check
+
 # ╭――――――――――――――――――╮
 # │ VERSION          │
 # ╰――――――――――――――――――╯

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Health drop-in for podman container.
+# Verifies that the podman binary is available and responsive.
+
+if ! /usr/bin/podman --version > /dev/null 2>&1; then
+  echo "podman binary not responding"
+  exit 1
+fi
+
+exit 0
